@@ -15,16 +15,19 @@ class DinosController < ApplicationController
     def update
         dino = Dino.find(params[:id])
         dino.update(dino_params)
+        render json: dino
     end
     
     def destroy
-        
+        dino = Dino.find(params[:id])
+        dino.destroy
+        render json: dino 
     end
       
-      private
+    private
     
         def dino_params
           params.require(:dino).permit(:name, :age, :enjoys, :image)
         end
     
-    end
+end

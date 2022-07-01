@@ -53,33 +53,65 @@ RSpec.describe "Dinos", type: :request do
     end
   end
 
-  describe "PUT /update" do
-    it 'updates a dino' do
-          
+  describe "PATCH /update" do
+    it 'updates a dino that exists in the database' do
+
+      Dino.create(
+        name: 'John',
+        age: 4,
+        enjoys: 'Walks in the park',
+        image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+      )
+
+      dino = Dino.first
+
       # I need something to send to my application to have it loaded into the database
-      dino_params = {
+      updated_dino_params = {
         dino: {
           name: 'John',
           age: 5,
-          enjoys: 'Eating pizza',
+          enjoys: 'Walks in the park',
           image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
         }
       }
-          
+
       # I need to make a request to my appilcation to create the object we made
-      put '/dinos', params[:id]
-      # I need to assert that the response is correct
-        # status code
-      expect(response).to have_http_status(200)
+      patch "/dinos/#{dino.id}", params: updated_dino_params
       
+      # I need to assert that the response is correct
+      # status code
+      expect(response).to have_http_status(200)
       # define a variable that is in the database
-      dino = Dino.first
-      # assert that the item in the DB is the same we sent over
-      expect(dino.name).to eq 'John'
-      expect(dino.age).to eq 5
-      expect(dino.enjoys).to eq 'Eating pizza'
-      expect(dino.image).to eq 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
-    
+      updated_dino = Dino.find(dino.id)
+      expect(dino.age).to eq 4
+      expect(updated_dino.age).to eq 5
+      # assert that the item in the BD is the same we sent over
     end
   end
+
+  describe "DELETE /destroy" do
+    it "destroys the requested dino" do
+      Dino.create(
+        name: 'John',
+        age: 4,
+        enjoys: 'Walks in the park',
+        image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+      )
+      p Dino.all
+      #--> <ActiveRecord::Relation [#<Dino id: 99, name: "John", age: 4, enjoys: "Walks in the park", image: "https://www.shutterstock.com/image-photo/funny-lau...", created_at: "2022-07-01 04:53:40.381919000 +0000", updated_at: "2022-07-01 04:53:40.381919000 +0000">]>
+      dino = Dino.first
+
+      delete "/dinos/#{dino.id}"
+
+      expect(response).to have_http_status(200)
+
+      p Dino.all 
+      #--> <ActiveRecord::Relation []>
+      
+    end
+  end 
+  
 end
+
+# Finished in 0.15523 seconds (files took 1.12 seconds to load)
+# 4 examples, 0 failures
