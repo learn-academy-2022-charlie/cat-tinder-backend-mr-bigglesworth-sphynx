@@ -1,4 +1,4 @@
 class Dino < ApplicationRecord
     validates :name, :age, :enjoys, :image, presence: true
-    validates :enjoys, length: 10
+    validates :enjoys, length: {minimum: 10}
 end

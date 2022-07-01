@@ -9,7 +9,11 @@ class DinosController < ApplicationController
   
     def create
         dino = Dino.create(dino_params)
-        render json: dino
+        if dino.valid?
+            render json: dino
+        else   
+            render json: dino.errors, status: 422
+        end
     end
     
     def update
