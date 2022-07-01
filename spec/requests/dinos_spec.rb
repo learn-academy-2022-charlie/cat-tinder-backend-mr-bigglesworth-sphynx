@@ -196,7 +196,7 @@ end
         }
       }
 
-      # I need to make a request to my appilcation to create the object we made
+      # I need to make a request to my application to create the object we made
       patch "/dinos/#{dino.id}", params: updated_dino_params
       
       # I need to assert that the response is correct
@@ -208,7 +208,144 @@ end
       expect(updated_dino.age).to eq 5
       # assert that the item in the BD is the same we sent over
     end
+
+    it 'does not update a dino without a name' do
+
+      # I need something to send to my application to have it loaded into the database
+      
+      Dino.create(
+        name: 'John',
+        age: 4,
+        enjoys: 'Walks in the park',
+        image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+      )
+
+      # p Dino.all
+      dino = Dino.first
+      testId = dino.id
+
+      # I need something to send to my application to have it loaded into the database
+      updated_dino_params = {
+        dino: {
+          
+          age: 5,
+          enjoys: 'Walks in the park',
+          image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+        }
+      } 
+     
+
+      # I need to make a request to my application to update the object we made
+      updated_dino = Dino.find(dino.id)
+      patch "/dinos/#{testId}", params: updated_dino_params
+      # I need to assert that the response is correct
+        # status code
+        p dino
+      expect(response).to have_http_status(200)
+
+      # define a variable that is in the database
+      dino = JSON.parse(response.body)
+      # assert that the item in the DB is the same we sent over
+      
+      expect(updated_dino[:name]).to include "can't be blank"
   end
+
+#   it 'does not update a dino without an age' do
+
+#     # I need something to send to my application to have it loaded into the database
+#     dino_params = {
+#       dino: {
+#         name: 'Juan',
+
+#         enjoys: 'eating everything in its path',
+#         image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+#       }
+#     }
+
+#     # I need to make a request to my application to update the object we made
+#     post '/dinos', params: dino_params
+#     # I need to assert that the response is correct
+#       # status code
+#     expect(response).to have_http_status(422)
+
+#     # define a variable that is in the database
+#     dino = JSON.parse(response.body)
+#     # assert that the item in the DB is the same we sent over
+#    expect(dino['age']).to include "can't be blank"
+#   end
+  
+#   it 'does not update a dino without an enjoys' do
+
+#     # I need something to send to my application to have it loaded into the database
+#     dino_params = {
+#       dino: {
+#         name: 'Juan',
+
+#         age: 6,
+#         image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+#       }
+#     }
+
+#     # I need to make a request to my appilcation to update the object we made
+#     post '/dinos', params: dino_params
+#     # I need to assert that the response is correct
+#       # status code
+#     expect(response).to have_http_status(422)
+
+#     # define a variable that is in the database
+#     dino = JSON.parse(response.body)
+#     # assert that the item in the DB is the same we sent over
+#    expect(dino['enjoys']).to include "can't be blank"
+#   end
+
+#   it 'check minimum length of enjoys is 10' do
+
+#     # I need something to send to my application to have it loaded into the database
+#     dino_params = {
+#       dino: {
+#         name: 'Juan',
+#         age: 6,
+#         enjoys: 'eating everything in its path eating everything in its path eating everything in its path eating everything in its path eating everything in its path',
+#         image: 'https://www.shutterstock.com/image-photo/funny-laughing-dinosaur-head-on-human-2163097095'
+#       }
+#     }
+
+#     # I need to make a request to my application to update the object we made
+#     post '/dinos', params: dino_params
+#     # I need to assert that the response is correct
+#       # status code
+#     expect(response).to have_http_status(200)
+
+#     # define a variable that is in the database
+#     dino = JSON.parse(response.body)
+#     # assert that the item in the DB is the same we sent over
+#    expect(dino['enjoys'].length).to (be > 9)
+#   end
+
+#   it 'does not update a dino without an image' do
+
+#     # I need something to send to my application to have it loaded into the database
+#     dino_params = {
+#       dino: {
+#         name: 'Juan',
+#         age: 6,
+#         enjoys: 'eating everything in its path'
+        
+#       }
+#     }
+
+#     # I need to make a request to my appilcation to create the object we made
+#     post '/dinos', params: dino_params
+#     # I need to assert that the response is correct
+#       # status code
+#     expect(response).to have_http_status(422)
+
+#     # define a variable that is in the database
+#     dino = JSON.parse(response.body)
+#     # assert that the item in the DB is the same we sent over
+#    expect(dino['image']).to include "can't be blank"
+#   end
+end
 
   describe "DELETE /destroy" do
     it "destroys the requested dino" do

@@ -18,8 +18,13 @@ class DinosController < ApplicationController
     
     def update
         dino = Dino.find(params[:id])
-        dino.update(dino_params)
-        render json: dino
+        # dino.update(dino_params)
+        # render json: dino
+        if dino.update(dino_params)
+            render json: dino
+        else   
+            render json: dino.errors, status: 422
+        end
     end
     
     def destroy
